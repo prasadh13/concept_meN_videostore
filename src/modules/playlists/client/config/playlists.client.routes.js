@@ -10,9 +10,9 @@
   function routeConfig($stateProvider) {
     $stateProvider
       .state('playlists', {
-         url: '/playlists',
+        url: '/playlists',
         templateUrl: 'modules/playlists/client/views/home-playlists.client.view.html',
-        controller: 'PlaylistsListController',
+        controller: 'PlaylistsController',
         controllerAs: 'vm',
         data: {
           pageTitle: 'Playlists Home'

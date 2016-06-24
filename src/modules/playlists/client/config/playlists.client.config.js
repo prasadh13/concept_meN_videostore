@@ -11,7 +11,7 @@
     // Set top bar menu items
     menuService.addMenuItem('topbar', {
       title: 'Playlists',
-      state: 'playlists',
+      state: 'playlists'
       /*
       type: 'dropdown',
       roles: ['*']*/
