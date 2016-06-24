@@ -1,0 +1,22 @@
+<section>
+  <div class="page-header">
+    <h1>Playlists</h1>
+  </div>
+  <div class="list-group">
+    <a data-ng-repeat="playlist in vm.playlists"
+       data-ui-sref="playlists.view({ playlistId: playlist._id })"
+       class="list-group-item">
+      <small class="list-group-item-text">
+        Posted on
+        <span data-ng-bind="playlist.created | date:'mediumDate'"></span>
+        by
+        <span data-ng-if="playlist.user" data-ng-bind="playlist.user.displayName"></span>
+        <span data-ng-if="!playlist.user">Deleted User</span>
+      </small>
+      <h4 class="list-group-item-heading" data-ng-bind="playlist.name"></h4>
+    </a>
+  </div>
+  <div class="alert alert-warning text-center" data-ng-if="vm.playlists.$resolved && !vm.playlists.length">
+    No Playlists yet, why don't you <a data-ui-sref="playlists.create">create one</a>?
+  </div>
+</section>
