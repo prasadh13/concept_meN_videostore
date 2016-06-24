@@ -1,9 +1,5 @@
 (function () {
   'use strict';
-  /*var init = function() {
-    console.log("init");
-    window.initGapi(); // Calls the init function defined on the window
-  }*/
   // Playlists controller
   angular
     .module('playlists')
@@ -28,7 +24,8 @@
 
     $scope.getChannel = function () {
       console.log("getChannel");
-      googleService.googleApiClientReady().then(function (data) {
+      googleService.googleApiClientReady()
+      .then(function (data) {
         $scope.channel = data;
         console.log(data);
       }, function (error) {

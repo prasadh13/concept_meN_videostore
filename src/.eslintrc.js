@@ -65,6 +65,8 @@ module.exports = {
     moment: true,
     Modernizr: true,
     Promise: true,
+    gapi: true,
+    window: true,
     __TESTING__: true,
     _: false,
     ApplicationConfiguration: true

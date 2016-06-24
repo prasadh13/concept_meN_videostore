@@ -1,3 +1,4 @@
+
 // Playlists service used to communicate Playlists REST endpoints
 (function () {
   'use strict';
@@ -25,10 +26,10 @@
   googleService.$inject = ['$http', '$q'];
 
   function googleService($http, $q) {
-   var deferred = $q.defer();
+    var deferred = $q.defer();
     this.googleApiClientReady = function () {
       console.log("googleApiClientReady");
-      if(typeof gapi.client == undefined) {
+      if (typeof gapi.client == undefined) {
         setTimeout({}, 3000);
       }
       gapi.client.setApiKey('AIzaSyA9cnBo_sdxDxlewKghDL55hReLOS0P3CQ');
