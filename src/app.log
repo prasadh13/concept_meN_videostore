@@ -44970,3 +44970,9 @@ SyntaxError: Use of const in strict mode.
 
 2016-06-25T07:07:38.284Z - info: [0mGET /modules/playlists/client/views/templates/player.html [36m304 [0m0.891 ms - -[0m
 
+2016-06-25T07:11:51.938Z - info: [0mGET /modules/chat/client/views/chat.client.view.html [36m304 [0m14.193 ms - -[0m
+
+2016-06-25T07:12:06.956Z - info: [0mGET /modules/core/client/views/home.client.view.html [32m200 [0m23.136 ms - -[0m
+
+2016-06-25T07:12:07.090Z - info: [0mGET /modules/core/client/img/brand/logo.png [32m200 [0m2.659 ms - 14055[0m
+

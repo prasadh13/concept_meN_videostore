@@ -82,7 +82,7 @@
       }
       $window.onYouTubeIframeAPIReady = function() {
         console.log("loading player");
-        player = new YT.Player("player_id_video", {
+        player = new YT.Player("player_id", {
           playerVars: {
             'autoplay': 0,
             'html5': 1,
