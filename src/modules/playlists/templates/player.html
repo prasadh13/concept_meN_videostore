@@ -1,0 +1,4 @@
+<div ng-repeat = "item in playlist_videos.items">
+	<iframe width = "640" height = "360" ng-src = "{{video_link(item.contentDetails.videoId)}}" frameborder = "0">
+	</iframe>
+</div>

@@ -41,3 +41,6 @@ a:hover .header-profile-image {
 .has-error .help-inline.error-text {
   display: inline;
 }
+body {
+  padding-top: 70px;
+}

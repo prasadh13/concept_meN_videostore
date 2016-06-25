@@ -9,6 +9,7 @@
 
   function PlaylistsController ($scope, $state, Authentication, $window, googleService) {
     var vm = this;
+    var player;
 
     vm.authentication = Authentication;
     // vm.playlist = playlist;
@@ -21,7 +22,29 @@
       console.log("initgapi");
       $scope.getChannel();
     };
-
+    /* function loadPlayerApi() {
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+    function onYouTubeIframeAPIReady() {
+      console.log("creating player window");
+      player = new YT.Player('player', {
+        height: '390',
+        width: '640',
+        playerVars: {
+          listType:'playlist',
+          list:'PL7BE47BFB4EAA777D'
+        },
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+    function onPlayerReady(event) {
+      event.target.playVideo();
+    }*/
     $scope.getChannel = function () {
       console.log("getChannel");
       googleService.googleApiClientReady()

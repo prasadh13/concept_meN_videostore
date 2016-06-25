@@ -37,7 +37,7 @@
         var request = gapi.client.youtube.playlistItems.list({
           part: 'snippet',
           playlistId: 'PL7BE47BFB4EAA777D',
-          maxResults: 8
+          maxResults: 5
         });
         request.execute(function(response) {
           deferred.resolve(response.result);
