@@ -82,7 +82,7 @@
       }
       $window.onYouTubeIframeAPIReady = function() {
         console.log("loading player");
-        player = new YT.Player("player_id", {
+        player = new YT.Player("player_id_video", {
           playerVars: {
             'autoplay': 0,
             'html5': 1,
@@ -101,7 +101,7 @@
       $window.onPlayerStateChange = function(event) {
         console.log(player.getVideoUrl());
         console.log(event.target);
-      }
+      };
     }
   }
 }());

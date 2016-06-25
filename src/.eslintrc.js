@@ -67,6 +67,7 @@ module.exports = {
     Promise: true,
     gapi: true,
     window: true,
+    onPlayerStateChange: true,
     YT: true,
     __TESTING__: true,
     _: false,
