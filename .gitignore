@@ -1,6 +1,6 @@
 # General
 # =======
-*.log
+src/*.log
 *.csv
 *.dat
 *.out
