@@ -1,18 +1,22 @@
-<div class="row" style="background-color:black">
-	<div class="col-md-8">
-		<iframe id = "player_id" width = "{{width}}" height = "{{height}}" ng-src = "{{video_link(playlist_videos.items[0].contentDetails.videoId)}}" frameborder = "0">
-		</iframe>
+<div style="background-color:black; padding:2px; border:3px solid #cc6600; border-radius:3px; height:435px;">
+	<div style="background-color:black; float:left">
+		<div>
+			<iframe id = "player_id" width = "{{width}}" height = "{{height}}" ng-src = "{{video_link(playlist_videos[0].contentDetails.videoId)}}" frameborder = "0">
+			</iframe>
+		</div>
 	</div>
-	<div class="col-md-4 col-md-pull-1" style="color:white; padding-top:10px" style="display: inline-block;">
-		<div ng-repeat = "item in playlist_videos.items">
-			<img ng-src="{{item.snippet.thumbnails.default.url}}" height="item.snippet.thumbnails.default.height" width="{{item.snippet.thumbnails.default.width}}" style="margin-right:10px; float:left;">
-			<br>
-			<p style="padding-left:3px;">{{item.snippet.title}}</p>
-			<hr>
-		</div>
-		<div style="text-align:center; bottom:0; margin-top:120px">
-			<span class="btn btn-lg glyphicon glyphicon-chevron-left" ng-class="{disabled:previousButton}" ng-click="playPreviousVideo()"></span>
-			<span class="btn btn-lg glyphicon glyphicon-chevron-right" ng-class="{disabled:nextButton}" ng-click="playNextVideo()"></span>
-		</div>
-	</div>	
+	<div style="background-color:black; float:left; width:490px; padding-left:5px; height:390px; overflow: auto;">
+		<div style="color:white; display: inline-block; padding:10px;">
+			<div ng-repeat = "item in playlist_videos" style="padding:8px; border:1px solid white; border-radius:3px" ng-click="click(item.contentDetails.videoId)">
+				<div style="height:90px;">
+				<img ng-src="{{item.snippet.thumbnails.default.url}}" height="{{item.snippet.thumbnails.default.height}}" width="{{item.snippet.thumbnails.default.width}}" style="vertical-align:middle; float:left; margin-right:4px">
+				<p style="padding-top:7px;">{{item.snippet.title}}</p>
+			</div>
+			</div>
+		</div>	
+	</div>
+	<div style="text-align:center; bottom:0; background-color:black; color:white;">
+		<span class="btn glyphicon glyphicon-chevron-left" ng-class="{disabled:previousButton}" ng-click="playPreviousVideo()"></span>
+		<span class="btn glyphicon glyphicon-chevron-right" ng-class="{disabled:nextButton}" ng-click="playNextVideo()"></span>
+	</div>
 </div>

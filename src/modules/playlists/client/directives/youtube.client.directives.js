@@ -1,3 +1,4 @@
+/* eslint no-loop-func:0*/
 (function () {
   'use strict';
 
@@ -14,7 +15,8 @@
         width: "@",
         videoid: "@",
         playNextVideo: "&",
-        playPreviousVideo: "&"
+        playPreviousVideo: "&",
+        click: "&"
       },
       templateUrl: 'modules/playlists/client/views/templates/player.html',
       link: link
@@ -25,7 +27,9 @@
       var player;
       var videos = [];
       var next_token,
-        prev_token;
+        prev_token,
+        request;
+      scope.playlist_response = [];
       scope.global_list = {};
       scope.previousButton = true;
       scope.nextButton = false;
@@ -39,28 +43,44 @@
         this.currently_playing = 0;
         this.nextpage = next_token;
       }
-      function loadPlaylist() {
-        var request = gapi.client.youtube.playlistItems.list({
-          part: 'snippet, contentDetails',
-          playlistId: 'PL7BE47BFB4EAA777D',
-          maxResults: 2
-        });
+      function loadPlaylist(next_token, counter, playlist_response) {
+        if (typeof next_token !== 'undefined') {
+          request = gapi.client.youtube.playlistItems.list({
+            part: 'snippet, contentDetails',
+            playlistId: 'PL7BE47BFB4EAA777D',
+            maxResults: 50,
+            pageToken: next_token
+          });
+        } else {
+          request = gapi.client.youtube.playlistItems.list({
+            part: 'snippet, contentDetails',
+            playlistId: 'PL7BE47BFB4EAA777D',
+            maxResults: 50
+          });
+        }
         request.execute(function(response) {
-          if (response.result.nextPageToken) {
-            next_token = response.result.nextPageToken;
+          console.log(response.items);
+          console.log(response.result.nextPageToken);
+          scope.playlist_response = scope.playlist_response.concat(response.items);
+          next_token = response.result.nextPageToken;
+          if (typeof response.result.nextPageToken !== 'undefined') {
+            counter++;
+            loadPlaylist(response.result.nextPageToken, counter, scope.playlist_response);
+          } else {
+            console.log(scope.playlist_response);
+            angular.forEach(scope.playlist_response, function(value, key) {
+              var entry = {};
+              entry.videoid = value.snippet.resourceId.videoId;
+              entry.title = value.snippet.title;
+              entry.img_src = value.snippet.thumbnails.default;
+              videos.push(entry);
+            });
+            scope.global_list[scope.videoid] = new YouTubePlayList(scope.videoid, videos, next_token);
+            console.log(scope.global_list);
+            scope.$apply(function() {
+              scope.playlist_videos = scope.playlist_response;
+            });
           }
-          angular.forEach(response.items, function(value, key) {
-            var entry = {};
-            entry.videoid = value.snippet.resourceId.videoId;
-            entry.title = value.snippet.title;
-            entry.img_src = value.snippet.thumbnails.default;
-            videos.push(entry);
-          });
-          scope.global_list[scope.videoid] = new YouTubePlayList(scope.videoid, videos, next_token);
-          console.log(scope.global_list);
-          scope.$apply(function() {
-            scope.playlist_videos = response;
-          });
         });
       }
       youtubeApiLoaderService.ready.then(function() {
@@ -91,6 +111,9 @@
           loadNextVideo(scope.videoid);
         }
       };
+      scope.click = function(videoid) {
+        alert(videoid);
+      };
       function loadNextVideo(playlistId) {
         if (scope.global_list[playlistId].currently_playing < scope.global_list[playlistId].videos.length - 1) {
           scope.global_list[playlistId].currently_playing++;
@@ -113,16 +136,15 @@
         }
       };
       function loadVideoToPlayer(videoid) {
-        if(scope.global_list[scope.videoid].currently_playing === scope.global_list[scope.videoid].videos.length - 1) {
+        if (scope.global_list[scope.videoid].currently_playing === scope.global_list[scope.videoid].videos.length - 1) {
           console.log("end of array");
           scope.nextButton = true;
           scope.previousButton = false;
-        } else if(scope.global_list[scope.videoid].currently_playing === 0) {
+        } else if (scope.global_list[scope.videoid].currently_playing === 0) {
           console.log("beginning of array");
           scope.nextButton = false;
           scope.previousButton = true;
-        }
-        else {
+        } else {
           scope.previousButton = false;
           scope.nextButton = false;
         }
