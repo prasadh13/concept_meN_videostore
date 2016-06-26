@@ -4,15 +4,17 @@
   angular.module('playlists')
     .directive('youtube', youtube);
 
-  youtube.$inject = ['$rootScope', '$timeout', '$interpolate', '$state', '$window', '$sce'];
+  youtube.$inject = ['$rootScope', '$timeout', '$interpolate', '$state', '$window', '$sce', 'youtubeApiLoaderService'];
 
-  function youtube($rootScope, $timeout, $interpolate, $state, $window, $sce) {
+  function youtube($rootScope, $timeout, $interpolate, $state, $window, $sce, youtubeApiLoaderService) {
     var directive = {
       restrict: 'E',
       scope: {
         height: "@",
         width: "@",
-        videoid: "@"
+        videoid: "@",
+        playNextVideo: "&",
+        playPreviousVideo: "&"
       },
       templateUrl: 'modules/playlists/client/views/templates/player.html',
       link: link
@@ -20,25 +22,13 @@
 
     return directive;
     function link(scope, element, attrs) {
-      console.log("linking api");
-
-      var tag2 = document.createElement('script');
-      tag2.src = "https://apis.google.com/js/client.js?onload=init";
-      var firstScriptTag2 = document.getElementsByTagName('script')[0];
-      firstScriptTag2.parentNode.insertBefore(tag2, firstScriptTag2);
-
       var player;
       var videos = [];
       var next_token,
         prev_token;
       scope.global_list = {};
-      $window.init = function() {
-        console.log("init");
-        gapi.client.load('youtube', 'v3', function() {
-          gapi.client.setApiKey('AIzaSyA9cnBo_sdxDxlewKghDL55hReLOS0P3CQ');
-          loadPlaylist();
-        });
-      };
+      scope.previousButton = true;
+      scope.nextButton = false;
       scope.video_link = function(v_id) {
         var v_link = 'https://www.youtube.com/embed/' + v_id + '?enablejsapi=1';
         return $sce.trustAsResourceUrl(v_link);
@@ -56,7 +46,6 @@
           maxResults: 2
         });
         request.execute(function(response) {
-          console.log(response);
           if (response.result.nextPageToken) {
             next_token = response.result.nextPageToken;
           }
@@ -67,21 +56,14 @@
             entry.img_src = value.snippet.thumbnails.default;
             videos.push(entry);
           });
-          console.log(videos);
           scope.global_list[scope.videoid] = new YouTubePlayList(scope.videoid, videos, next_token);
           console.log(scope.global_list);
           scope.$apply(function() {
             scope.playlist_videos = response;
           });
         });
-        console.log("loading iframe api");
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       }
-      $window.onYouTubeIframeAPIReady = function() {
-        console.log("loading player");
+      youtubeApiLoaderService.ready.then(function() {
         player = new YT.Player("player_id", {
           playerVars: {
             'autoplay': 0,
@@ -94,14 +76,58 @@
             'controls': 1
           },
           events: {
-            'onStateChange': onPlayerStateChange
+            'onReady': function(event) {
+              console.log(player);
+            },
+            'onStateChange': function(event) {
+              scope.onPlayerStateChange(event);
+            }
           }
         });
+        loadPlaylist();
+      });
+      scope.onPlayerStateChange = function(event) {
+        if (event.data === 0 && scope.global_list[scope.videoid].currently_playing < scope.global_list[scope.videoid].videos.length) {
+          loadNextVideo(scope.videoid);
+        }
       };
-      $window.onPlayerStateChange = function(event) {
-        console.log(player.getVideoUrl());
-        console.log(event.target);
+      function loadNextVideo(playlistId) {
+        if (scope.global_list[playlistId].currently_playing < scope.global_list[playlistId].videos.length - 1) {
+          scope.global_list[playlistId].currently_playing++;
+          console.log(scope.global_list[playlistId].currently_playing);
+          loadVideoToPlayer(scope.global_list[playlistId].videos[scope.global_list[playlistId].currently_playing].videoid);
+        }
+      }
+      scope.playNextVideo = function() {
+        if (scope.global_list[scope.videoid].currently_playing < scope.global_list[scope.videoid].videos.length - 1) {
+          scope.global_list[scope.videoid].currently_playing++;
+          console.log(scope.global_list[scope.videoid].currently_playing);
+          loadVideoToPlayer(scope.global_list[scope.videoid].videos[scope.global_list[scope.videoid].currently_playing].videoid);
+        }
       };
+      scope.playPreviousVideo = function() {
+        if (scope.global_list[scope.videoid].currently_playing <= scope.global_list[scope.videoid].videos.length - 1) {
+          scope.global_list[scope.videoid].currently_playing--;
+          console.log(scope.global_list[scope.videoid].currently_playing);
+          loadVideoToPlayer(scope.global_list[scope.videoid].videos[scope.global_list[scope.videoid].currently_playing].videoid);
+        }
+      };
+      function loadVideoToPlayer(videoid) {
+        if(scope.global_list[scope.videoid].currently_playing === scope.global_list[scope.videoid].videos.length - 1) {
+          console.log("end of array");
+          scope.nextButton = true;
+          scope.previousButton = false;
+        } else if(scope.global_list[scope.videoid].currently_playing === 0) {
+          console.log("beginning of array");
+          scope.nextButton = false;
+          scope.previousButton = true;
+        }
+        else {
+          scope.previousButton = false;
+          scope.nextButton = false;
+        }
+        player.loadVideoById(videoid, 0, "default");
+      }
     }
   }
 }());

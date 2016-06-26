@@ -5,9 +5,9 @@
     .module('playlists')
     .controller('PlaylistsController', PlaylistsController);
 
-  PlaylistsController.$inject = ['$scope', '$state', 'Authentication', '$window', 'googleService'];
+  PlaylistsController.$inject = ['$scope', '$state', 'Authentication', '$window'];
 
-  function PlaylistsController ($scope, $state, Authentication, $window, googleService) {
+  function PlaylistsController ($scope, $state, Authentication, $window) {
     var vm = this;
     var player;
 
@@ -45,7 +45,7 @@
     function onPlayerReady(event) {
       event.target.playVideo();
     }*/
-    $scope.getChannel = function () {
+    /* $scope.getChannel = function () {
       console.log("getChannel");
       googleService.googleApiClientReady()
       .then(function (data) {
@@ -54,7 +54,7 @@
       }, function (error) {
         console.log('Failed: ' + error);
       });
-    };
+    };*/
     // Remove existing Playlist
     function remove() {
       if (confirm('Are you sure you want to delete?')) {
